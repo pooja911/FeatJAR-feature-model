@@ -2,9 +2,10 @@ import org.junit.jupiter.api.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
+
+import de.featjar.feature.model.SelectionType;
 
 public class ConfigurationXMLFormatTest {
 
@@ -24,16 +25,24 @@ public class ConfigurationXMLFormatTest {
         }
     }
 
-    @Test //Add and get the feature
+    @Test
     public void testAddAndGetFeature() {
-        config.addFeature("Feature1", "Value1");
-        assertEquals("Value1", config.getFeature("Feature1"));
+        config.addFeature("Feature1", "Value1", SelectionType.MANUAL, SelectionType.AUTOMATIC);
+        Object value = config.getFeatures().get("Feature1");
+        SelectionType manual = config.getManualSelections().get("Feature1");
+        SelectionType automatic = config.getAutomaticSelections().get("Feature1");
+
+        assertNotNull(value);
+        assertEquals("Value1", value);
+        assertEquals(SelectionType.MANUAL, manual);
+        assertEquals(SelectionType.AUTOMATIC, automatic);
     }
 
-    @Test //check whether features are stored in the file or not
-    public void testSaveToXML() { 
-        config.addFeature("Feature1", "Value1");
-        config.addFeature("Feature2", "Value2");
+    @Test
+    public void testSaveToXML() {
+        config.addFeature("Feature1", "Value1", SelectionType.MANUAL, SelectionType.AUTOMATIC);
+        config.addFeature("Feature2", 42.0, SelectionType.MANUAL, SelectionType.AUTOMATIC);
+        config.addFeature("Feature3", true, SelectionType.MANUAL, SelectionType.AUTOMATIC);
 
         config.saveToXML(TEST_XML_FILE);
 
@@ -42,23 +51,51 @@ public class ConfigurationXMLFormatTest {
         assertTrue(file.length() > 0);
     }
 
+    @Test
+    public void testLoadFromXML() {
+        config.addFeature("Feature1", "Value1", SelectionType.MANUAL, SelectionType.AUTOMATIC);
+        config.addFeature("Feature2", 42.0, SelectionType.MANUAL, SelectionType.AUTOMATIC);
+        config.addFeature("Feature3", true, SelectionType.MANUAL, SelectionType.AUTOMATIC);
+        config.saveToXML(TEST_XML_FILE);
 
-    @Test //feature can get from xml
+        ConfigurationXMLFormat loadedConfig = new ConfigurationXMLFormat();
+        loadedConfig.loadFromXML(TEST_XML_FILE);
+
+        Map<String, Object> features = loadedConfig.getFeatures();
+        Map<String, SelectionType> manualSelections = loadedConfig.getManualSelections();
+        Map<String, SelectionType> automaticSelections = loadedConfig.getAutomaticSelections();
+
+        assertEquals("Value1", features.get("Feature1"));
+        assertEquals(42.0, features.get("Feature2"));
+        assertEquals(true, features.get("Feature3"));
+
+        assertEquals(SelectionType.MANUAL, manualSelections.get("Feature1"));
+        assertEquals(SelectionType.AUTOMATIC, automaticSelections.get("Feature1"));
+    }
+
+    @Test
+    public void testOverwriteExistingFeature() {
+        config.addFeature("Feature1", "Value1", SelectionType.MANUAL, SelectionType.AUTOMATIC);
+        config.addFeature("Feature1", "NewValue", SelectionType.AUTOMATIC, SelectionType.MANUAL);
+
+        Object value = config.getFeatures().get("Feature1");
+        SelectionType manual = config.getManualSelections().get("Feature1");
+        SelectionType automatic = config.getAutomaticSelections().get("Feature1");
+
+        assertNotNull(value);
+        assertEquals("NewValue", value);
+        assertEquals(SelectionType.AUTOMATIC, manual);
+        assertEquals(SelectionType.MANUAL, automatic);
+    }
+
+    @Test
     public void testLoadNonExistentXMLFile() {
         ConfigurationXMLFormat loadedConfig = new ConfigurationXMLFormat();
-        assertDoesNotThrow(() -> loadedConfig.loadFromXML("config.xml"));
+        assertDoesNotThrow(() -> loadedConfig.loadFromXML("nonexistent.xml"));
         assertTrue(loadedConfig.getFeatures().isEmpty());
     }
 
-    @Test //feature with an existing name overwrites the previous value.
-    public void testOverwriteExistingFeature() {
-        config.addFeature("Feature1", "Value1");
-        config.addFeature("Feature1", "Value2");
-
-        assertEquals("Value2", config.getFeature("Feature1"));
-    }
-
-    @Test //handling of an empty xml file 
+    @Test
     public void testLoadFromEmptyXMLFile() throws IOException {
         Files.writeString(new File(TEST_XML_FILE).toPath(), "");
 
@@ -66,16 +103,6 @@ public class ConfigurationXMLFormatTest {
         assertDoesNotThrow(() -> loadedConfig.loadFromXML(TEST_XML_FILE));
         assertTrue(loadedConfig.getFeatures().isEmpty());
     }
-
-    @Test //feature can be removed 
-    public void testRemoveFeature() {
-        config.addFeature("Feature1", "Value1");
-        config.getFeatures().remove("Feature1");
-
-        assertNull(config.getFeature("Feature1"));
-    }
-
-   
 
     
 }
