@@ -2,8 +2,31 @@ package de.featjar.feature.model;
 
 import java.util.*;
 
-//@author : PoojaGarg
 
+/**
+ * FeatureModelConfiguration manages the selection state of features within a feature model.
+ * It supports adding and removing features, manually or automatically setting their selection state,
+ * and resetting their selection state. It also allows retrieving sets of features based on their selection state.
+ * 
+ * Example usage:
+ *     FeatureModelConfiguration config = new FeatureModelConfiguration();
+ *     IFeature feature = ...; // some feature implementation
+ *     config.addFeature(feature);
+ *     config.setManual(feature, Selection.SELECTED);
+ *     Set<IFeature> selectedFeatures = config.getSelectedFeatures();
+
+ * 
+ * Note: Throws FeatureNotFoundException if a feature is not found during selection state changes.</p>
+ * 
+ * @see IFeature
+ * @see SelectableFeature
+ * @see Selection
+ * @see FeatureNotFoundException
+ * 
+ *
+ *  @author: Pooja Garg
+ *
+ */
 public class FeatureModelConfiguration {
     private final Map<IFeature, SelectableFeature> features = new HashMap<>();
 

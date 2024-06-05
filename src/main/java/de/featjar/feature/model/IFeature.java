@@ -37,7 +37,7 @@ import java.util.LinkedHashSet;
  * therefore be used sparsely
  * to avoid cache invalidation and renaming issues.
  *
- * @author Elias Kuiter
+ * 
  */
 public interface IFeature extends IFeatureModelElement, IHasCommonAttributes {
 

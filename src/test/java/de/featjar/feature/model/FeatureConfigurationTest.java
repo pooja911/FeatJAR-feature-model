@@ -13,7 +13,26 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@author : PoojaGarg
+
+/**
+ * FeatureConfigurationTest tests the FeatureModelConfiguration class.
+ * It verifies adding, removing, and setting selection states (manual and automatic) for features.
+ * 
+ * Example tests:
+ *     - Adding features and verifying the count
+ *     - Removing features and checking they are not present
+ *     - Setting manual selection state and verifying
+ *     - Setting automatic selection state and verifying
+
+ * A nested TestFeature class is used as a mock implementation of the IFeature interface for testing purposes.
+ * 
+ * @see FeatureModelConfiguration
+ * @see IFeature
+ * @see SelectableFeature
+ * @see Selection
+ * 
+ *  @author: Pooja Garg
+ */
 class FeatureConfigurationTest {
     private FeatureModelConfiguration featureConfiguration;
     private IFeature feature1;
