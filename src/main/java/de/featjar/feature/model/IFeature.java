@@ -37,7 +37,7 @@ import java.util.LinkedHashSet;
  * therefore be used sparsely
  * to avoid cache invalidation and renaming issues.
  *
- * @author Elias Kuiter
+ * 
  */
 public interface IFeature extends IFeatureModelElement, IHasCommonAttributes {
 
@@ -64,17 +64,6 @@ public interface IFeature extends IFeatureModelElement, IHasCommonAttributes {
     default boolean isVisible() {
         return !isHidden();
     }
-
-    // @Override
-    default void select(SelectionType selectionType) {
-        FeatureModelConfiguration config = new FeatureModelConfiguration();
-        if (config != null) {
-            config.select(this, selectionType);
-        } else {
-            // handle error or log a message
-        }
-    }
-   
 
     default LinkedHashSet<IConstraint> getReferencingConstraints() {
         return getFeatureModel().getConstraints().stream()
