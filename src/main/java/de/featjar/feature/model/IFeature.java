@@ -27,15 +27,17 @@ import de.featjar.feature.model.mixins.IHasCommonAttributes;
 import java.util.LinkedHashSet;
 
 /**
- * A feature in a {@link FeatureModel} describes some functionality of a software system.
+ * A feature in a {@link FeatureModel} describes some functionality of a
+ * software system.
  * It is attached to a {@link FeatureModel} and labels a {@link FeatureTree}.
  * For safe mutation, rely only on the methods of {@link IMutableFeature}.
  * A {@link Feature} is uniquely determined by its immutable {@link AIdentifier}
  * or name (obtained with {@link IHasCommonAttributes#getName()}).
- * In contrast to a feature's identifier, its name is mutable and should therefore be used sparsely
+ * In contrast to a feature's identifier, its name is mutable and should
+ * therefore be used sparsely
  * to avoid cache invalidation and renaming issues.
  *
- * @author Elias Kuiter
+ * 
  */
 public interface IFeature extends IFeatureModelElement, IHasCommonAttributes {
 
@@ -65,8 +67,7 @@ public interface IFeature extends IFeatureModelElement, IHasCommonAttributes {
 
     default LinkedHashSet<IConstraint> getReferencingConstraints() {
         return getFeatureModel().getConstraints().stream()
-                .filter(constraint ->
-                        constraint.getReferencedFeatures().stream().anyMatch(this::equals))
+                .filter(constraint -> constraint.getReferencedFeatures().stream().anyMatch(this::equals))
                 .collect(Sets.toSet());
     }
 
