@@ -13,7 +13,10 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import de.featjar.feature.model.SelectionType;
+
+import de.featjar.base.data.Result;
+import de.featjar.feature.model.mixins.IHasCommonAttributes;
+
 
 public class ConfigurationXMLFormat {
     private Map<String, Object> features;
@@ -26,10 +29,11 @@ public class ConfigurationXMLFormat {
         this.automaticSelections = new HashMap<>();
     }
 
-    public void addFeature(String name, Object value, SelectionType manual, SelectionType automatic) {
-        this.features.put(name, value);
-        this.manualSelections.put(name, manual);
-        this.automaticSelections.put(name, automatic);
+    public void addFeature(IHasCommonAttributes feature, Object value, SelectionType manual, SelectionType automatic) {
+    String name = feature.getName().orElseThrow("Warning null value occured"); // Null validation
+    this.features.put(name, value);
+    this.manualSelections.put(name, manual);
+    this.automaticSelections.put(name, automatic);
     }
 
     public Map<String, Object> getFeatures() {
@@ -56,6 +60,7 @@ public class ConfigurationXMLFormat {
             NodeList featureNodes = doc.getElementsByTagName("feature");
 
             for (int i = 0; i < featureNodes.getLength(); i++) {
+
                 Element featureElement = (Element) featureNodes.item(i);
                 String name = featureElement.getElementsByTagName("name").item(0).getTextContent();
                 String value = featureElement.getElementsByTagName("value").item(0).getTextContent();
@@ -68,7 +73,7 @@ public class ConfigurationXMLFormat {
                     case "Double":
                         typedValue = Double.parseDouble(value);
                         break;
-                    case "Float":
+                    case "Float": // can remove it
                         typedValue = Float.parseFloat(value);
                         break;
                     case "Integer":
