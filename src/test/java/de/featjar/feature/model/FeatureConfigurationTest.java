@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @see SelectableFeature
  * @see Selection
  * 
- *  @author: Pooja Garg
+ * Author: Pooja Garg
  */
 class FeatureConfigurationTest {
     private FeatureModelConfiguration featureConfiguration;

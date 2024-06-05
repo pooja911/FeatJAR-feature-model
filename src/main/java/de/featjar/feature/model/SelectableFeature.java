@@ -16,7 +16,7 @@ package de.featjar.feature.model;
  * @see IFeature
  * @see Selection
  * 
- *  @author: Pooja Garg
+ * Author: Pooja Garg
  */
 
 public class SelectableFeature {
