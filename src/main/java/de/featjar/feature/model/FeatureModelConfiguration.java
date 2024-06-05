@@ -3,6 +3,7 @@ package de.featjar.feature.model;
 import java.util.*;
 
 //@author : PoojaGarg
+
 public class FeatureModelConfiguration {
     private final Map<IFeature, SelectableFeature> features = new HashMap<>();
 

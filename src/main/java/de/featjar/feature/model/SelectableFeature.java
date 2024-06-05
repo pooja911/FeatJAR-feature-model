@@ -1,5 +1,6 @@
 package de.featjar.feature.model;
 
+//@author : PoojaGarg
 public class SelectableFeature {
     private final IFeature feature;
     private Selection manual = Selection.UNDEFINED;

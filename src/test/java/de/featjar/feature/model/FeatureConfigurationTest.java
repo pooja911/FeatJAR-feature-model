@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//@author : PoojaGarg
 class FeatureConfigurationTest {
     private FeatureModelConfiguration featureConfiguration;
     private IFeature feature1;
