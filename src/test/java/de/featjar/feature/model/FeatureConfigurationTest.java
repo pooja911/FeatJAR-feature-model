@@ -35,25 +35,39 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class FeatureConfigurationTest {
     private FeatureModelConfiguration featureConfiguration;
+    private FeatureModel featureModel;
     private IFeature feature1;
     private IFeature feature2;
-
+    
+	/**
+	 * Set up before each test case
+	 * featureModel is a FeatureModel object which is created
+	 * feature1 and feature2 are IFeature object which are added as features to the fm
+	 * featureConfiguration is a FeatureModelConfiguration object which is created with the fm
+	 */
     @BeforeEach
     void setUp() {
-        featureConfiguration = new FeatureModelConfiguration();
-        feature1 = new TestFeature("Feature1");
-        feature2 = new TestFeature("Feature2");
-        featureConfiguration.addFeature(feature1);
-        featureConfiguration.addFeature(feature2);
+    	featureModel = new FeatureModel();
+        feature1 = featureModel.addFeature("Feature1");
+        feature2 = featureModel.addFeature("Feature2");
+        featureConfiguration = new FeatureModelConfiguration(featureModel);       
     }
 
+    /**
+     * Test case to see if features have been added
+     * Assert statement checks if 2 features have been added to the FMConfiguration
+     */
     @Test
     void testAddFeature() {
         assertEquals(2, featureConfiguration.getSelectedFeatures().size() +
                 featureConfiguration.getUnselectedFeatures().size() +
                 featureConfiguration.getUndefinedFeatures().size());
     }
-
+    
+    /**
+     * Test case to see if features have been removed
+     * Assert statement checks if feature1 is still there in the FMConfiguration
+     */
     @Test
     void testRemoveFeature() {
         featureConfiguration.removeFeature(feature1);
@@ -62,6 +76,10 @@ class FeatureConfigurationTest {
         assertFalse(featureConfiguration.getUndefinedFeatures().contains(feature1));
     }
     
+    /**
+     * Test case to see if features has been set manual
+     * Assert statement checks if feature1 has been selected and then unselected
+     */
     @Test
     void testSetManualSelection() {
         featureConfiguration.setManual(feature1, Selection.SELECTED);
@@ -72,6 +90,10 @@ class FeatureConfigurationTest {
         assertTrue(featureConfiguration.getUndefinedFeatures().contains(feature1));
     }
 
+    /**
+     * Test case to see if feature has been set automatic
+     * Assert statement checks if feature2 has been selected and then unselected
+     */
     @Test
     void testSetAutomaticSelection() {
         featureConfiguration.setAutomatic(feature2, Selection.SELECTED);
@@ -80,69 +102,5 @@ class FeatureConfigurationTest {
         assertTrue(featureConfiguration.getUnselectedFeatures().contains(feature2));
         featureConfiguration.resetAutomatic(feature2);
         assertTrue(featureConfiguration.getUndefinedFeatures().contains(feature2));
-    }
-
-    static class TestFeature implements IFeature {
-        private final String name;
-
-        TestFeature(String name) {
-            this.name = name;
-        }
-
-
-        @Override
-        public Result<IFeatureTree> getFeatureTree() {
-            return Result.of(null);
-        }
-
-        @Override
-        public Class<?> getType() {
-            return null;
-        }
-
-        @Override
-        public IFeature clone() {
-            return new TestFeature(name);
-        }
-
-        @Override
-        public IFeature clone(IFeatureModel newFeatureModel) {
-            return new TestFeature(name);
-        }
-
-        @Override
-        public boolean isAbstract() {
-            return false;
-        }
-
-        @Override
-        public boolean isHidden() {
-            return false;
-        }
-
-        @Override
-        public LinkedHashSet<IConstraint> getReferencingConstraints() {
-            return new LinkedHashSet<>();
-        }
-
-        @Override
-        public IFeatureModel getFeatureModel() {
-            return null;
-        }
-
-        @Override
-        public IMutableFeature mutate() {
-            return null;
-        }
-
-		@Override
-		public IIdentifier getIdentifier() {
-			return null;
-		}
-
-		@Override
-		public Optional<Map<IAttribute<?>, Object>> getAttributes() {
-			return Optional.empty();
-		}
     }
 }
