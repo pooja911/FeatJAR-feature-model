@@ -14,28 +14,57 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/**
+ * This class provides methods to manage a configuration of features stored in an XML file.
+ * Features can be added, retrieved, saved to an XML file, and loaded from an XML file.
+ */
 public class ConfigurationXMLFormat {
     private Map<String, Object> features;
     private Map<String, SelectableFeature> selectableFeatures;
 
+    /**
+     * Constructs a new ConfigurationXMLFormat object with empty feature maps.
+     */
     public ConfigurationXMLFormat() {
         this.features = new HashMap<>();
         this.selectableFeatures = new HashMap<>();
     }
 
+    /**
+     * Adds a feature to the configuration.
+     *
+     * @param name The name of the feature.
+     * @param value The value of the feature.
+     * @param feature The SelectableFeature object associated with the feature.
+     */
     public void addFeature(String name, Object value, SelectableFeature feature) {
         this.features.put(name, value);
         this.selectableFeatures.put(name, feature);
     }
 
+    /**
+     * Retrieves the map of features.
+     *
+     * @return A map containing the features.
+     */
     public Map<String, Object> getFeatures() {
         return this.features;
     }
 
+    /**
+     * Retrieves the map of selectable features.
+     *
+     * @return A map containing the selectable features.
+     */
     public Map<String, SelectableFeature> getSelectableFeatures() {
         return this.selectableFeatures;
     }
 
+    /**
+     * Loads the configuration from an XML file.
+     *
+     * @param filePath The path to the XML file.
+     */
     public void loadFromXML(String filePath) {
         try {
             File file = new File(filePath);
@@ -87,6 +116,11 @@ public class ConfigurationXMLFormat {
         }
     }
 
+    /**
+     * Saves the configuration to an XML file.
+     *
+     * @param filePath The path to the XML file.
+     */
     public void saveToXML(String filePath) {
         try {
             Document doc = createDocument();
@@ -123,21 +157,38 @@ public class ConfigurationXMLFormat {
         }
     }
 
-    // Override parseDocument method
+    /**
+     * Parses an XML file into a Document object.
+     *
+     * @param file The XML file to parse.
+     * @return A Document object representing the parsed XML file.
+     * @throws Exception if an error occurs while parsing the XML file.
+     */
     protected Document parseDocument(File file) throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         return dBuilder.parse(file);
     }
 
-    // Override createDocument method
+    /**
+     * Creates a new Document object.
+     *
+     * @return A new Document object.
+     * @throws Exception if an error occurs while creating the Document object.
+     */
     protected Document createDocument() throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         return dBuilder.newDocument();
     }
 
-    // Override writeDocument method
+    /**
+     * Writes a Document object to an XML file.
+     *
+     * @param doc The Document object to write.
+     * @param filePath The path to the XML file.
+     * @throws Exception if an error occurs while writing the XML file.
+     */
     protected void writeDocument(Document doc, String filePath) throws Exception {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
@@ -147,6 +198,11 @@ public class ConfigurationXMLFormat {
         transformer.transform(source, result);
     }
 
+    /**
+     * Main method for testing the ConfigurationXMLFormat class.
+     *
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         ConfigurationXMLFormat config = new ConfigurationXMLFormat();
 
@@ -165,13 +221,11 @@ public class ConfigurationXMLFormat {
         feature3.setAutomatic(SelectionType.AUTOMATIC);
         config.addFeature("Feature3", 123.45, feature3);
 
-        config.saveToXML("Featuremodelconfig1.xml");
+        config.saveToXML("Featuremodelconfig.xml");
 
         ConfigurationXMLFormat loadedConfig = new ConfigurationXMLFormat();
-        loadedConfig.loadFromXML("Featuremodelconfig1.xml");
+        loadedConfig.loadFromXML("Featuremodelconfig.xml");
         System.out.println(loadedConfig.getFeatures());
         System.out.println(loadedConfig.getSelectableFeatures());
     }
 }
-
-
