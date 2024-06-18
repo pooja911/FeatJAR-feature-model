@@ -19,42 +19,36 @@ package de.featjar.feature.model;
  * Author: Pooja Garg
  */
 
-public class SelectableFeature {
-    private final IFeature feature;
-    private Selection manual = Selection.UNDEFINED;
-    private Selection automatic = Selection.UNDEFINED;
+ public class SelectableFeature {
+    private final String name;
+    private SelectionType manual = SelectionType.UNDEFINED;
+    private SelectionType automatic = SelectionType.UNDEFINED;
 
-    public SelectableFeature(IFeature feature) {
-        this.feature = feature;
+    public SelectableFeature(String name) {
+        this.name = name;
     }
 
     public String getName() {
-        return feature.getName().orElse("Unnamed feature");
+        return name;
     }
 
-    public IFeature getFeature() {
-        return feature;
-    }
-
-    public Selection getManual() {
+    public SelectionType getManual() {
         return manual;
     }
 
-    public void setManual(Selection manual) {
+    public void setManual(SelectionType manual) {
         this.manual = manual;
     }
 
-    public Selection getAutomatic() {
+    public SelectionType getAutomatic() {
         return automatic;
     }
 
-    public void setAutomatic(Selection automatic) {
+    public void setAutomatic(SelectionType automatic) {
         this.automatic = automatic;
     }
 
-    public Selection getSelection() {
-        return manual != Selection.UNDEFINED ? manual : automatic;
+    public SelectionType getSelection() {
+        return manual != SelectionType.UNDEFINED ? manual : automatic;
     }
-
-
 }
