@@ -3,6 +3,8 @@ package de.featjar.feature.model;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -14,11 +16,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import de.featjar.base.io.format.IFormat;
+import de.featjar.base.io.format.ParseException;
+import de.featjar.base.io.xml.AXMLFormat;
+
 /**
  * This class provides methods to manage a configuration of features stored in an XML file.
  * Features can be added, retrieved, saved to an XML file, and loaded from an XML file.
  */
-public class ConfigurationXMLFormat {
+public class ConfigurationXMLFormat extends AXMLFormat<FeatureModelConfiguration>  implements IFormat<FeatureModelConfiguration> {
     private Map<String, Object> features;
     private Map<String, SelectableFeature> selectableFeatures;
 
@@ -197,5 +203,28 @@ public class ConfigurationXMLFormat {
         StreamResult result = new StreamResult(new File(filePath));
         transformer.transform(source, result);
     }
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected FeatureModelConfiguration parseDocument(Document document) throws ParseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void writeDocument(FeatureModelConfiguration object, Document doc) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected Pattern getInputHeaderPattern() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
