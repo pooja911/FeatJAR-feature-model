@@ -146,4 +146,8 @@ public class FeatureModelConfiguration {
         }
         return selectableFeature;
     }
+    
+    public boolean isManualSelected(String featureName) {
+    	return getFeatureState(featureName).getManual() == SelectionType.SELECTED;
+	}
 }
