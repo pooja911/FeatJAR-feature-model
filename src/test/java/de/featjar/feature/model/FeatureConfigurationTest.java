@@ -34,13 +34,18 @@ class FeatureConfigurationTest {
 	private FeatureModel featureModel;
 	private IIdentifier featureId1;
 	private IIdentifier featureId2;
+	private IFeature feature1;
+	private IFeature feature2;
 
 	@BeforeEach
 	void setUp() {
 	    featureModel = new FeatureModel();
-	    featureId1 = (IIdentifier) featureModel.addFeature("Feature1");
-	    featureId2 = (IIdentifier) featureModel.addFeature("Feature2");
+	    feature1 = featureModel.addFeature("Feature1");
+		feature2 = featureModel.addFeature("Feature2");
+		featureId1 = feature1.getIdentifier();
+		featureId2 = feature2.getIdentifier();
 	    featureConfiguration = new FeatureModelConfiguration(featureModel);
+	    System.out.println();
 	}
 	
 	

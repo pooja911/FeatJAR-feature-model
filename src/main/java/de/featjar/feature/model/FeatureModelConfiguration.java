@@ -114,7 +114,7 @@ public class FeatureModelConfiguration {
         Set<IIdentifier> result = new HashSet<>();
         for (SelectableFeature selectableFeature : featureStates.values()) {
             if (selectableFeature.getSelection() == selection) {
-                result.add(((IIdentifiable) selectableFeature).getIdentifier());
+                result.add(selectableFeature.getIdentifier());
             }
         }
         return result;

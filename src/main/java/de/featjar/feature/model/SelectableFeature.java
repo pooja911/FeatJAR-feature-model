@@ -34,9 +34,9 @@ public class SelectableFeature {
         return name;
     }
 
-//    public IIdentifier getIdentifier() {
-//        return identifier;
-//    }
+    public IIdentifier getIdentifier() {
+        return identifier;
+    }
 
     public SelectionType getManual() {
         return manual;
