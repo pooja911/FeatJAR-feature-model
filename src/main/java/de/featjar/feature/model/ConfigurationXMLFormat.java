@@ -198,34 +198,4 @@ public class ConfigurationXMLFormat {
         transformer.transform(source, result);
     }
 
-    /**
-     * Main method for testing the ConfigurationXMLFormat class.
-     *
-     * @param args Command line arguments.
-     */
-    public static void main(String[] args) {
-        ConfigurationXMLFormat config = new ConfigurationXMLFormat();
-
-        SelectableFeature feature1 = new SelectableFeature("Feature1");
-        feature1.setManual(SelectionType.MANUAL);
-        feature1.setAutomatic(SelectionType.AUTOMATIC);
-        config.addFeature("Feature1", "StringValue", feature1);
-
-        SelectableFeature feature2 = new SelectableFeature("Feature2");
-        feature2.setManual(SelectionType.MANUAL);
-        feature2.setAutomatic(SelectionType.AUTOMATIC);
-        config.addFeature("Feature2", 43, feature2);
-
-        SelectableFeature feature3 = new SelectableFeature("Feature3");
-        feature3.setManual(SelectionType.MANUAL);
-        feature3.setAutomatic(SelectionType.AUTOMATIC);
-        config.addFeature("Feature3", 123.45, feature3);
-
-        config.saveToXML("Featuremodelconfig.xml");
-
-        ConfigurationXMLFormat loadedConfig = new ConfigurationXMLFormat();
-        loadedConfig.loadFromXML("Featuremodelconfig.xml");
-        System.out.println(loadedConfig.getFeatures());
-        System.out.println(loadedConfig.getSelectableFeatures());
-    }
 }

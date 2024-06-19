@@ -1,7 +1,5 @@
 package de.featjar.feature.model;
 
-import de.featjar.base.data.identifier.IIdentifier;
-
 /**
  * SelectableFeature represents a feature within a feature model with manual and automatic selection states.
  * It provides methods to get and set these selection states, as well as to retrieve the feature name and identifier.
@@ -20,22 +18,16 @@ import de.featjar.base.data.identifier.IIdentifier;
  */
 
 public class SelectableFeature {
-    private final IIdentifier identifier;
     private final String name;
     private SelectionType manual = SelectionType.UNDEFINED;
     private SelectionType automatic = SelectionType.UNDEFINED;
 
-    public SelectableFeature(IIdentifier identifier, String name) {
-        this.identifier = identifier;
+    public SelectableFeature(String name) {
         this.name = name;
     }
 
     public String getName() {
         return name;
-    }
-
-    public IIdentifier getIdentifier() {
-        return identifier;
     }
 
     public SelectionType getManual() {
