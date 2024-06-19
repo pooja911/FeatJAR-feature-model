@@ -32,8 +32,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class FeatureConfigurationTest {
 	private FeatureModelConfiguration featureConfiguration;
 	private FeatureModel featureModel;
-	private IIdentifier featureId1;
-	private IIdentifier featureId2;
+	private String featureId1;
+	private String featureId2;
 	private IFeature feature1;
 	private IFeature feature2;
 
@@ -42,8 +42,8 @@ class FeatureConfigurationTest {
 	    featureModel = new FeatureModel();
 	    feature1 = featureModel.addFeature("Feature1");
 		feature2 = featureModel.addFeature("Feature2");
-		featureId1 = feature1.getIdentifier();
-		featureId2 = feature2.getIdentifier();
+		featureId1 = feature1.getName().orElseThrow();
+		featureId2 = feature2.getName().orElseThrow();
 	    featureConfiguration = new FeatureModelConfiguration(featureModel);
 	    System.out.println();
 	}

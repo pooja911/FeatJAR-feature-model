@@ -29,14 +29,14 @@ import de.featjar.base.data.identifier.IIdentifier;
  */
 public class FeatureModelConfiguration {
     private final FeatureModel featureModel; // The feature model instance
-    private final Map<IIdentifier, SelectableFeature> featureStates = new HashMap<>();
+    private final Map<String, SelectableFeature> featureStates = new HashMap<>();
 
     public FeatureModelConfiguration(FeatureModel featureModel) {
         this.featureModel = Objects.requireNonNull(featureModel, "FeatureModel cannot be null");
 
         // Initialize configuration with features from the feature model
         for (IFeature feature : featureModel.getFeatures()) {
-            featureStates.put(feature.getIdentifier(), new SelectableFeature(feature.getIdentifier(), null));
+            featureStates.put(feature.getName().get(), new SelectableFeature(feature.getName().get()));
         }
     }
 
@@ -46,11 +46,11 @@ public class FeatureModelConfiguration {
      * @param featureId the identifier of the feature to add
      * @throws FeatureNotFoundException if the feature is not found in the feature model
      */
-    public void addFeature(IIdentifier featureId) {
-        if (!featureModel.hasFeature(featureId)) {
+    public void addFeature(String featureName) {
+        if (!featureModel.getFeature(featureName).isPresent()) {
             throw new FeatureNotFoundException();
         }
-        featureStates.putIfAbsent(featureId, new SelectableFeature(featureId, null));
+        featureStates.putIfAbsent(featureName, new SelectableFeature(featureName));
     }
 
     /**
@@ -58,7 +58,7 @@ public class FeatureModelConfiguration {
      * 
      * @param featureId the identifier of the feature to remove
      */
-    public void removeFeature(IIdentifier featureId) {
+    public void removeFeature(String featureId) {
         featureStates.remove(featureId);
     }
 
@@ -69,7 +69,7 @@ public class FeatureModelConfiguration {
      * @param selection the new selection state
      * @throws FeatureNotFoundException if the feature is not found in the configuration
      */
-    public void setManual(IIdentifier featureId, SelectionType selection) {
+    public void setManual(String featureId, SelectionType selection) {
         SelectableFeature selectableFeature = getFeatureState(featureId);
         selectableFeature.setManual(selection);
     }
@@ -81,7 +81,7 @@ public class FeatureModelConfiguration {
      * @param selection the new selection state
      * @throws FeatureNotFoundException if the feature is not found in the configuration
      */
-    public void setAutomatic(IIdentifier featureId, SelectionType selection) {
+    public void setAutomatic(String featureId, SelectionType selection) {
         SelectableFeature selectableFeature = getFeatureState(featureId);
         selectableFeature.setAutomatic(selection);
     }
@@ -91,7 +91,7 @@ public class FeatureModelConfiguration {
      * 
      * @param featureId the identifier of the feature to reset
      */
-    public void resetManual(IIdentifier featureId) {
+    public void resetManual(String featureId) {
         setManual(featureId, SelectionType.UNDEFINED);
     }
 
@@ -100,7 +100,7 @@ public class FeatureModelConfiguration {
      * 
      * @param featureId the identifier of the feature to reset
      */
-    public void resetAutomatic(IIdentifier featureId) {
+    public void resetAutomatic(String featureId) {
         setAutomatic(featureId, SelectionType.UNDEFINED);
     }
 
@@ -110,25 +110,25 @@ public class FeatureModelConfiguration {
      * @param selection the selection state to filter by
      * @return a set of feature identifiers with the specified selection state
      */
-    public Set<IIdentifier> getFeaturesBySelection(SelectionType selection) {
-        Set<IIdentifier> result = new HashSet<>();
+    public Set<String> getFeaturesBySelection(SelectionType selection) {
+        Set<String> result = new HashSet<>();
         for (SelectableFeature selectableFeature : featureStates.values()) {
             if (selectableFeature.getSelection() == selection) {
-                result.add(selectableFeature.getIdentifier());
+                result.add(selectableFeature.getName());
             }
         }
         return result;
     }
 
-    public Set<IIdentifier> getSelectedFeatures() {
+    public Set<String> getSelectedFeatures() {
         return getFeaturesBySelection(SelectionType.SELECTED);
     }
 
-    public Set<IIdentifier> getUnselectedFeatures() {
+    public Set<String> getUnselectedFeatures() {
         return getFeaturesBySelection(SelectionType.UNSELECTED);
     }
 
-    public Set<IIdentifier> getUndefinedFeatures() {
+    public Set<String> getUndefinedFeatures() {
         return getFeaturesBySelection(SelectionType.UNDEFINED);
     }
 
@@ -139,11 +139,15 @@ public class FeatureModelConfiguration {
      * @return the selectable feature state
      * @throws FeatureNotFoundException if the feature is not found
      */
-    private SelectableFeature getFeatureState(IIdentifier featureId) {
+    private SelectableFeature getFeatureState(String featureId) {
         SelectableFeature selectableFeature = featureStates.get(featureId);
         if (selectableFeature == null) {
             throw new FeatureNotFoundException();
         }
         return selectableFeature;
     }
+    
+    public boolean isManualSelected(String featureName) {
+    	return getFeatureState(featureName).getManual() == SelectionType.SELECTED;
+	}
 }

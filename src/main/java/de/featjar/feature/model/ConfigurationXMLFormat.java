@@ -3,6 +3,8 @@ package de.featjar.feature.model;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -14,11 +16,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import de.featjar.base.io.format.IFormat;
+import de.featjar.base.io.format.ParseException;
+import de.featjar.base.io.xml.AXMLFormat;
+
 /**
  * This class provides methods to manage a configuration of features stored in an XML file.
  * Features can be added, retrieved, saved to an XML file, and loaded from an XML file.
  */
-public class ConfigurationXMLFormat {
+public class ConfigurationXMLFormat extends AXMLFormat<FeatureModelConfiguration>  implements IFormat<FeatureModelConfiguration> {
     private Map<String, Object> features;
     private Map<String, SelectableFeature> selectableFeatures;
 
@@ -198,34 +204,27 @@ public class ConfigurationXMLFormat {
         transformer.transform(source, result);
     }
 
-    /**
-     * Main method for testing the ConfigurationXMLFormat class.
-     *
-     * @param args Command line arguments.
-     */
-    public static void main(String[] args) {
-        ConfigurationXMLFormat config = new ConfigurationXMLFormat();
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-        SelectableFeature feature1 = new SelectableFeature("Feature1");
-        feature1.setManual(SelectionType.MANUAL);
-        feature1.setAutomatic(SelectionType.AUTOMATIC);
-        config.addFeature("Feature1", "StringValue", feature1);
+	@Override
+	protected FeatureModelConfiguration parseDocument(Document document) throws ParseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-        SelectableFeature feature2 = new SelectableFeature("Feature2");
-        feature2.setManual(SelectionType.MANUAL);
-        feature2.setAutomatic(SelectionType.AUTOMATIC);
-        config.addFeature("Feature2", 43, feature2);
+	@Override
+	protected void writeDocument(FeatureModelConfiguration object, Document doc) {
+		// TODO Auto-generated method stub
+	}
 
-        SelectableFeature feature3 = new SelectableFeature("Feature3");
-        feature3.setManual(SelectionType.MANUAL);
-        feature3.setAutomatic(SelectionType.AUTOMATIC);
-        config.addFeature("Feature3", 123.45, feature3);
+	@Override
+	protected Pattern getInputHeaderPattern() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-        config.saveToXML("Featuremodelconfig.xml");
-
-        ConfigurationXMLFormat loadedConfig = new ConfigurationXMLFormat();
-        loadedConfig.loadFromXML("Featuremodelconfig.xml");
-        System.out.println(loadedConfig.getFeatures());
-        System.out.println(loadedConfig.getSelectableFeatures());
-    }
 }
