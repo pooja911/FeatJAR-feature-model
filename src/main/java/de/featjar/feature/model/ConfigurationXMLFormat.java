@@ -203,30 +203,6 @@ public class ConfigurationXMLFormat extends AXMLFormat<FeatureModelConfiguration
 		return null;
 	}
 
-<<<<<<< HEAD
-	/*@Override
-	protected FeatureModelConfiguration parseDocument(Document document) throws ParseException {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-
-	/*@Override
-	protected void writeDocument(FeatureModelConfiguration object, Document doc) {
-		// TODO Auto-generated method stub
-	}*/
-=======
-	@Override
-	protected FeatureModelConfiguration parseDocument(Document document) throws ParseException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void writeDocument(FeatureModelConfiguration object, Document doc) {
-		// TODO Auto-generated method stub
-	}
->>>>>>> 7c2849ff7aac31ce0bd97ba171f1d334d687e8bf
-
 	@Override
 	protected Pattern getInputHeaderPattern() {
 		// TODO Auto-generated method stub
