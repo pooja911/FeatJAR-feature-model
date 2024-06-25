@@ -1,25 +1,23 @@
 package de.featjar.feature.model;
 
-
 /**
  * SelectableFeature represents a feature within a feature model with manual and automatic selection states.
- * It provides methods to get and set these selection states, as well as to retrieve the feature and its name.
+ * It provides methods to get and set these selection states, as well as to retrieve the feature name and identifier.
  * The overall selection state is determined by the manual state, if defined, otherwise by the automatic state.
- * 
  * 
  * Example usage:
  *     IFeature feature = ...; // some feature implementation
- *     SelectableFeature selectableFeature = new SelectableFeature(feature);
- *     selectableFeature.setManual(Selection.SELECTED);
- *     Selection selection = selectableFeature.getSelection(); // returns Selection.SELECTED
+ *     SelectableFeature selectableFeature = new SelectableFeature(feature.getIdentifier(), feature.getName());
+ *     selectableFeature.setManual(SelectionType.SELECTED);
+ *     Selection selection = selectableFeature.getSelection(); // returns SelectionType.SELECTED
  *
  * @see IFeature
- * @see Selection
+ * @see SelectionType
  * 
  * Author: Pooja Garg
  */
 
- public class SelectableFeature {
+public class SelectableFeature {
     private final String name;
     private SelectionType manual = SelectionType.UNDEFINED;
     private SelectionType automatic = SelectionType.UNDEFINED;

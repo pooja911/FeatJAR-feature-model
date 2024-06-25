@@ -1,8 +1,4 @@
 package de.featjar.feature.model;
-<<<<<<< HEAD
-=======
-import de.featjar.feature.model.SelectionType;
->>>>>>> c2967bbded58cfa281c179b5e1e97c3778e5ed94
 
 public class FeatureSelectable {
     private Object value;
