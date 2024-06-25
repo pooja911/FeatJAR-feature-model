@@ -3,6 +3,8 @@ package de.featjar.feature.model;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -14,21 +16,24 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import de.featjar.base.io.format.IFormat;
+import de.featjar.base.io.format.ParseException;
+import de.featjar.base.io.xml.AXMLFormat;
+
 /**
  * This class provides methods to manage a configuration of features stored in an XML file.
  * Features can be added, retrieved, saved to an XML file, and loaded from an XML file.
  */
-public class ConfigurationXMLFormat {
+public class ConfigurationXMLFormat extends AXMLFormat<FeatureModelConfiguration>  implements IFormat<FeatureModelConfiguration> {
     private Map<String, Object> features;
     private Map<String, SelectableFeature> selectableFeatures;
 
     /**
      * Constructs a new ConfigurationXMLFormat object with empty feature maps.
      */
-    public ConfigurationXMLFormat() {
-        this.features = new HashMap<>();
-        this.selectableFeatures = new HashMap<>();
-    }
+    private final FeatureModel featureModel;
+    public ConfigurationXMLFormat(FeatureModel featureModel) {
+    this.featureModel = featureModel;}
 
     /**
      * Adds a feature to the configuration.
@@ -65,12 +70,16 @@ public class ConfigurationXMLFormat {
      *
      * @param filePath The path to the XML file.
      */
-    public void loadFromXML(String filePath) {
-        try {
-            File file = new File(filePath);
-            Document doc = parseDocument(file);
 
-            NodeList featureNodes = doc.getElementsByTagName("feature");
+    
+     @Override
+     protected FeatureModelConfiguration parseDocument(Document document) throws ParseException {
+         Element root = getDocumentElement(document, "FeatureModelConfiguration");
+
+         FeatureModelConfiguration config = new FeatureModelConfiguration(featureModel);
+        try {
+
+            NodeList featureNodes = document.getElementsByTagName("feature");
 
             for (int i = 0; i < featureNodes.getLength(); i++) {
                 Element featureElement = (Element) featureNodes.item(i);
@@ -103,17 +112,20 @@ public class ConfigurationXMLFormat {
                         typedValue = value;
                         break;
                 }
-
                 SelectableFeature selectableFeature = new SelectableFeature(name);
                 selectableFeature.setManual(manual);
                 selectableFeature.setAutomatic(automatic);
-                this.features.put(name, typedValue);
-                this.selectableFeatures.put(name, selectableFeature);
+                config.addFeature(name);
+                config.setManual(name, manual);
+                config.setAutomatic(name, automatic);
+                //config.getFeatureState().put(selectableFeature); // Update featureStates directly
+                //config.getFeaturesBySelection(); // Update features map
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return config;
     }
 
     /**
@@ -121,13 +133,16 @@ public class ConfigurationXMLFormat {
      *
      * @param filePath The path to the XML file.
      */
-    public void saveToXML(String filePath) {
+    @Override
+    protected void writeDocument(FeatureModelConfiguration object, Document doc) {
+        // Implement the logic to convert the FeatureModelConfiguration object into XML elements and add to the document
+        
+        // Add other elements representing the configuration state
         try {
-            Document doc = createDocument();
-
-            // Root element
-            Element rootElement = doc.createElement("configuration");
+         
+            Element rootElement = doc.createElement("FeatureModelConfiguration");
             doc.appendChild(rootElement);
+            //writeFeatureModel(object.featureStates(), rootElement);
 
             // Features
             for (String name : this.features.keySet()) {
@@ -150,8 +165,6 @@ public class ConfigurationXMLFormat {
                 rootElement.appendChild(featureElement);
             }
 
-            writeDocument(doc, filePath);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -164,11 +177,11 @@ public class ConfigurationXMLFormat {
      * @return A Document object representing the parsed XML file.
      * @throws Exception if an error occurs while parsing the XML file.
      */
-    protected Document parseDocument(File file) throws Exception {
+    /*protected Document parseDocument(File file) throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         return dBuilder.parse(file);
-    }
+    }*/
 
     /**
      * Creates a new Document object.
@@ -176,56 +189,35 @@ public class ConfigurationXMLFormat {
      * @return A new Document object.
      * @throws Exception if an error occurs while creating the Document object.
      */
-    protected Document createDocument() throws Exception {
+    /*protected Document createDocument() throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         return dBuilder.newDocument();
-    }
+    }*/
 
-    /**
-     * Writes a Document object to an XML file.
-     *
-     * @param doc The Document object to write.
-     * @param filePath The path to the XML file.
-     * @throws Exception if an error occurs while writing the XML file.
-     */
-    protected void writeDocument(Document doc, String filePath) throws Exception {
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File(filePath));
-        transformer.transform(source, result);
-    }
+  
 
-    /**
-     * Main method for testing the ConfigurationXMLFormat class.
-     *
-     * @param args Command line arguments.
-     */
-    public static void main(String[] args) {
-        ConfigurationXMLFormat config = new ConfigurationXMLFormat();
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-        SelectableFeature feature1 = new SelectableFeature("Feature1");
-        feature1.setManual(SelectionType.MANUAL);
-        feature1.setAutomatic(SelectionType.AUTOMATIC);
-        config.addFeature("Feature1", "StringValue", feature1);
+	/*@Override
+	protected FeatureModelConfiguration parseDocument(Document document) throws ParseException {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
 
-        SelectableFeature feature2 = new SelectableFeature("Feature2");
-        feature2.setManual(SelectionType.MANUAL);
-        feature2.setAutomatic(SelectionType.AUTOMATIC);
-        config.addFeature("Feature2", 43, feature2);
+	/*@Override
+	protected void writeDocument(FeatureModelConfiguration object, Document doc) {
+		// TODO Auto-generated method stub
+	}*/
 
-        SelectableFeature feature3 = new SelectableFeature("Feature3");
-        feature3.setManual(SelectionType.MANUAL);
-        feature3.setAutomatic(SelectionType.AUTOMATIC);
-        config.addFeature("Feature3", 123.45, feature3);
+	@Override
+	protected Pattern getInputHeaderPattern() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-        config.saveToXML("Featuremodelconfig.xml");
-
-        ConfigurationXMLFormat loadedConfig = new ConfigurationXMLFormat();
-        loadedConfig.loadFromXML("Featuremodelconfig.xml");
-        System.out.println(loadedConfig.getFeatures());
-        System.out.println(loadedConfig.getSelectableFeatures());
-    }
 }
