@@ -85,7 +85,7 @@ public class FeatureModelConfiguration {
         SelectableFeature selectableFeature = getFeatureState(featureId);
         selectableFeature.setAutomatic(selection);
     }
-
+    
     /**
      * Resets the manual selection state of a feature.
      * 
@@ -150,4 +150,18 @@ public class FeatureModelConfiguration {
     public boolean isManualSelected(String featureName) {
     	return getFeatureState(featureName).getManual() == SelectionType.SELECTED;
 	}
+    
+    public boolean isAutomaticSelected(String featureName)
+    {
+    	return getFeatureState(featureName).getAutomatic() == SelectionType.SELECTED;
+    }
+    
+    public Set<String> getAllFeatures()
+    {
+    	Set<String> features = new HashSet<>();
+    	features.addAll(getSelectedFeatures());
+    	features.addAll(getUnselectedFeatures());
+    	features.addAll(getUndefinedFeatures());
+    	return features;
+    }
 }

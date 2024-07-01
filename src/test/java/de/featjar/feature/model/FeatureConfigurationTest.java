@@ -32,57 +32,57 @@ import static org.junit.jupiter.api.Assertions.*;
 class FeatureConfigurationTest {
 	private FeatureModelConfiguration featureConfiguration;
 	private FeatureModel featureModel;
-	private String featureId1;
-	private String featureId2;
-	private IFeature feature1;
-	private IFeature feature2;
+	private String featureName1="Feature1";
+	private String featureName2="Feature2";
 
 	@BeforeEach
 	void setUp() {
 	    featureModel = new FeatureModel();
-	    feature1 = featureModel.addFeature("Feature1");
-		feature2 = featureModel.addFeature("Feature2");
-		featureId1 = feature1.getName().orElseThrow();
-		featureId2 = feature2.getName().orElseThrow();
+	    featureModel.addFeature(featureName1);
+		featureModel.addFeature(featureName2);
 	    featureConfiguration = new FeatureModelConfiguration(featureModel);
-	    System.out.println();
 	}
-	
 	
 	@Test
 	void testAddFeature() {
-	    assertEquals(2, featureConfiguration.getSelectedFeatures().size() +
-	            featureConfiguration.getUnselectedFeatures().size() +
-	            featureConfiguration.getUndefinedFeatures().size());
+	    assertEquals(2, featureConfiguration.getAllFeatures().size());
+	    assertFalse(featureConfiguration.getAllFeatures().contains("Feature3"));
+	    featureModel.addFeature("Feature3");
+	    featureConfiguration = new FeatureModelConfiguration(featureModel);
+	    assertTrue(featureConfiguration.getAllFeatures().contains("Feature3"));
+	    assertEquals(3, featureConfiguration.getAllFeatures().size());
 	}
 
 	@Test
 	void testRemoveFeature() {
-	    featureConfiguration.removeFeature(featureId1);
-	    assertFalse(featureConfiguration.getSelectedFeatures().contains(featureId1));
-	    assertFalse(featureConfiguration.getUnselectedFeatures().contains(featureId1));
-	    assertFalse(featureConfiguration.getUndefinedFeatures().contains(featureId1));
+	    featureConfiguration.removeFeature(featureName1);
+	    assertFalse(featureConfiguration.getAllFeatures().contains(featureName1));
 	}
 
 	@Test
 	void testSetManualSelection() {
-	    featureConfiguration.setManual(featureId1, SelectionType.SELECTED);
-	    assertTrue(featureConfiguration.getSelectedFeatures().contains(featureId1));
-	    featureConfiguration.setManual(featureId1, SelectionType.UNSELECTED);
-	    assertTrue(featureConfiguration.getUnselectedFeatures().contains(featureId1));
-	    featureConfiguration.resetManual(featureId1);
-	    assertTrue(featureConfiguration.getUndefinedFeatures().contains(featureId1));
+	    featureConfiguration.setManual(featureName1, SelectionType.SELECTED);
+	    assertTrue(featureConfiguration.isManualSelected(featureName1));
+	    featureConfiguration.setManual(featureName1, SelectionType.UNSELECTED);
+	    assertFalse(featureConfiguration.isManualSelected(featureName1));
+	    featureConfiguration.resetManual(featureName1);
+	    assertFalse(featureConfiguration.isManualSelected(featureName1));
 	}
 
 	@Test
 	void testSetAutomaticSelection() {
-	    featureConfiguration.setAutomatic(featureId2, SelectionType.SELECTED);
-	    assertTrue(featureConfiguration.getSelectedFeatures().contains(featureId2));
-	    featureConfiguration.setAutomatic(featureId2, SelectionType.UNSELECTED);
-	    assertTrue(featureConfiguration.getUnselectedFeatures().contains(featureId2));
-	    featureConfiguration.resetAutomatic(featureId2);
-	    assertTrue(featureConfiguration.getUndefinedFeatures().contains(featureId2));
+	    featureConfiguration.setAutomatic(featureName2, SelectionType.SELECTED);
+	    assertTrue(featureConfiguration.isAutomaticSelected(featureName2));
+	    featureConfiguration.setAutomatic(featureName2, SelectionType.UNSELECTED);
+	    assertFalse(featureConfiguration.isAutomaticSelected(featureName2));
+	    featureConfiguration.resetAutomatic(featureName2);
+	    assertFalse(featureConfiguration.isAutomaticSelected(featureName2));
 	}
 
+	/*
+	 * @Test void testSeeAllFeatures() {
+	 * 
+	 * System.out.println(featureConfiguration.getAllFeatures()); }
+	 */
 
 }
