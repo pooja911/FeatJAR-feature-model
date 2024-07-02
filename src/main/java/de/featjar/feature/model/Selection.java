@@ -1,33 +1,30 @@
-/* FeatureIDE - A Framework for Feature-Oriented Software Development
- * Copyright (C) 2005-2019  FeatureIDE team, University of Magdeburg, Germany
- *
- * This file is part of FeatureIDE.
- *
- * FeatureIDE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * FeatureIDE is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with FeatureIDE.  If not, see <http://www.gnu.org/licenses/>.
- *
- * See http://featureide.cs.ovgu.de/ for further information.
- */
 package de.featjar.feature.model;
 
+/** The {@code Selection} enum represents the possible states of a feature within the feature model.
+ * It is used to denote whether a feature is:
+ * 
+ *   {@link #SELECTED} - The feature is selected or enabled.
+ *   {@link #UNSELECTED} - The feature is deselected or disabled.
+ *   {@link #UNDEFINED} - The feature has no defined selection state (neither selected nor unselected).
+ *   
+ * This enum is used across various components in the feature management system to track and manage
+ * the selection state of features. The {@code toString} method is overridden to provide a string representation
+ * of the enum constants.
+ * 
+ * 
+ * 
+ * Author: Pooja Garg
+ *
+ *  
+**/
 
 public enum Selection {
+    SELECTED,
+    UNSELECTED,
+    UNDEFINED;
 
-	SELECTED(), UNSELECTED(), UNDEFINED();
-
-	@Override
-	public String toString() {
-		return super.toString();
-	}
-
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
