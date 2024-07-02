@@ -7,13 +7,6 @@ import java.util.*;
  * It supports adding and removing features, manually or automatically setting their selection state,
  * and resetting their selection state. It also allows retrieving sets of features based on their selection state.
  *
- * Example usage:
- *     FeatureModel featureModel = new FeatureModel();
- *     FeatureModelConfiguration config = new FeatureModelConfiguration(featureModel);
- *     IIdentifier featureId = ...; // Obtain feature identifier
- *     config.setManual(featureId, SelectionType.SELECTED);
- *     Set<IIdentifier> selectedFeatures = config.getSelectedFeatures();
- *
  * Note: Throws FeatureNotFoundException if a feature is not found during selection state changes.
  *
  * @see IFeature
