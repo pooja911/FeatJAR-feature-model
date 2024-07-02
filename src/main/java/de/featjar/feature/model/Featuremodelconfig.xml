@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+    <feature automatic="automatic" manual="manual" name="Feature3">
+        <type>Double</type>
+    </feature>
+    <feature automatic="automatic" manual="manual" name="Feature2">
+        <type>Integer</type>
+    </feature>
+    <feature automatic="automatic" manual="manual" name="Feature1">
+        <type>String</type>
+    </feature>
+</configuration>
