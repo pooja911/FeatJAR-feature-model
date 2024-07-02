@@ -4,43 +4,45 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.io.xml.AXMLFormat;
 
 /**
- * This class provides methods to manage a configuration of features stored in an XML file.
- * Features can be added, retrieved, saved to an XML file, and loaded from an XML file.
+ * Manages a configuration of features stored in an XML format. 
+ * Allows adding, retrieving, saving, and loading features to and from an XML file.
+ * This class extends {@link AXMLFormat} and implements {@link IFormat} for handling 
+ * XML formatting and feature model configuration.
+ * 
+ * Features are represented as elements within a "FeatureModelConfiguration" XML structure.
+ * Each feature element contains attributes for name, manual selection state, and automatic 
+ * selection state, along with additional metadata such as type.
  */
-public class ConfigurationXMLFormat extends AXMLFormat<FeatureModelConfiguration>  implements IFormat<FeatureModelConfiguration> {
-    private Map<String, Object> features;
-    private Map<String, SelectableFeature> selectableFeatures;
+public class ConfigurationXMLFormat extends AXMLFormat<FeatureModelConfiguration> implements IFormat<FeatureModelConfiguration> {
+    private Map<String, Object> features = new HashMap<>();
+    private Map<String, SelectableFeature> selectableFeatures = new HashMap<>();
 
-    /**
-     * Constructs a new ConfigurationXMLFormat object with empty feature maps.
-     */
     private final FeatureModel featureModel;
-    public ConfigurationXMLFormat(FeatureModel featureModel) {
-    this.featureModel = featureModel;}
 
     /**
-     * Adds a feature to the configuration.
+     * Constructs a new ConfigurationXMLFormat instance with a specified feature model.
+     *
+     * @param featureModel The feature model associated with this configuration format.
+     */
+    public ConfigurationXMLFormat(FeatureModel featureModel) {
+        this.featureModel = featureModel;
+    }
+
+    /**
+     * Adds a feature to the configuration map.
      *
      * @param name The name of the feature.
-     * @param value The value of the feature.
-     * @param feature The SelectableFeature object associated with the feature.
+     * @param value The value associated with the feature.
+     * @param feature The SelectableFeature object representing the feature.
      */
     public void addFeature(String name, Object value, SelectableFeature feature) {
         this.features.put(name, value);
@@ -66,19 +68,19 @@ public class ConfigurationXMLFormat extends AXMLFormat<FeatureModelConfiguration
     }
 
     /**
-     * Loads the configuration from an XML file.
+     * Parses an XML document into a {@link FeatureModelConfiguration} object.
      *
-     * @param filePath The path to the XML file.
+     * @param document The XML document to parse.
+     * @return A configured FeatureModelConfiguration object.
+     * @throws ParseException If an error occurs during parsing.
      */
+    @Override
+    protected FeatureModelConfiguration parseDocument(Document document) throws ParseException {
+        Element root = getDocumentElement(document, "FeatureModelConfiguration");
 
-    
-     @Override
-     protected FeatureModelConfiguration parseDocument(Document document) throws ParseException {
-         Element root = getDocumentElement(document, "FeatureModelConfiguration");
+        FeatureModelConfiguration config = new FeatureModelConfiguration(featureModel);
 
-         FeatureModelConfiguration config = new FeatureModelConfiguration(featureModel);
         try {
-
             NodeList featureNodes = document.getElementsByTagName("feature");
 
             for (int i = 0; i < featureNodes.getLength(); i++) {
@@ -86,26 +88,22 @@ public class ConfigurationXMLFormat extends AXMLFormat<FeatureModelConfiguration
                 String name = featureElement.getAttribute("name");
                 String type = featureElement.getElementsByTagName("type").item(0).getTextContent();
                 String value = featureElement.getElementsByTagName("value").item(0).getTextContent();
-                SelectionType manual = featureElement.hasAttribute("manual") ?
-                        SelectionType.valueOf(featureElement.getAttribute("manual").toUpperCase()) :
-                        SelectionType.UNDEFINED;
-                SelectionType automatic = featureElement.hasAttribute("automatic") ?
-                        SelectionType.valueOf(featureElement.getAttribute("automatic").toUpperCase()) :
-                        SelectionType.UNDEFINED;
+                SelectionType manual = featureElement.hasAttribute("manual") ? SelectionType.valueOf(featureElement.getAttribute("manual").toUpperCase()) : null;
+                SelectionType automatic = featureElement.hasAttribute("automatic") ? SelectionType.valueOf(featureElement.getAttribute("automatic").toUpperCase()) : null;
 
                 Object typedValue;
                 switch (type) {
                     case "Double":
-                        typedValue = Double.parseDouble(value);
+                        typedValue = Double.parseDouble(name);
                         break;
                     case "Float":
-                        typedValue = Float.parseFloat(value);
+                        typedValue = Float.parseFloat(name);
                         break;
                     case "Integer":
-                        typedValue = Integer.parseInt(value);
+                        typedValue = Integer.parseInt(name);
                         break;
                     case "Boolean":
-                        typedValue = Boolean.parseBoolean(value);
+                        typedValue = Boolean.parseBoolean(name);
                         break;
                     case "String":
                     default:
@@ -113,100 +111,85 @@ public class ConfigurationXMLFormat extends AXMLFormat<FeatureModelConfiguration
                         break;
                 }
                 SelectableFeature selectableFeature = new SelectableFeature(name);
-                selectableFeature.setManual(manual);
-                selectableFeature.setAutomatic(automatic);
-                config.addFeature(name);
-                config.setManual(name, manual);
-                config.setAutomatic(name, automatic);
-                //config.getFeatureState().put(selectableFeature); // Update featureStates directly
-                //config.getFeaturesBySelection(); // Update features map
+                if (manual != null) {
+                    if (manual == SelectionType.MANUAL) {
+                        config.setManual(name, Selection.SELECTED);
+                    }
+                } else {
+                    config.setManual(name, Selection.UNDEFINED);
+                }
+
+                if (automatic != null) {
+                    if (automatic == SelectionType.AUTOMATIC) {
+                        config.setAutomatic(name, Selection.SELECTED);
+                    }
+                } else {
+                    config.setAutomatic(name, Selection.UNDEFINED);
+                }
+
+                addFeature(name, typedValue, selectableFeature);
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            FeatJarLogger.logError("Exception occured please check log file");
         }
         return config;
     }
 
     /**
-     * Saves the configuration to an XML file.
+     * Writes a {@link FeatureModelConfiguration} object to an XML document.
      *
-     * @param filePath The path to the XML file.
+     * @param config The FeatureModelConfiguration object to write.
+     * @param doc The XML Document object to write to.
      */
     @Override
-    protected void writeDocument(FeatureModelConfiguration object, Document doc) {
-        // Implement the logic to convert the FeatureModelConfiguration object into XML elements and add to the document
-        
-        // Add other elements representing the configuration state
+    protected void writeDocument(FeatureModelConfiguration config, Document doc) {
         try {
-         
             Element rootElement = doc.createElement("FeatureModelConfiguration");
             doc.appendChild(rootElement);
-            //writeFeatureModel(object.featureStates(), rootElement);
 
-            // Features
-            for (String name : this.features.keySet()) {
+            for (String name : config.getAllFeatures()) {
                 Element featureElement = doc.createElement("feature");
 
                 featureElement.setAttribute("name", name);
-                featureElement.setAttribute("manual", this.selectableFeatures.get(name).getManual() != null ?
-                        this.selectableFeatures.get(name).getManual().name().toLowerCase() : "undefined");
-                featureElement.setAttribute("automatic", this.selectableFeatures.get(name).getAutomatic() != null ?
-                        this.selectableFeatures.get(name).getAutomatic().name().toLowerCase() : "undefined");
+                if (config.isManualSelected(name)) {
+                    featureElement.setAttribute("manual", SelectionType.MANUAL.name().toLowerCase());
+                }
+                if (config.isAutomaticSelected(name)) {
+                    featureElement.setAttribute("automatic", SelectionType.AUTOMATIC.name().toLowerCase());
+                }
 
                 Element typeElement = doc.createElement("type");
                 typeElement.appendChild(doc.createTextNode(this.features.get(name).getClass().getSimpleName()));
                 featureElement.appendChild(typeElement);
 
-                Element valueElement = doc.createElement("value");
-                valueElement.appendChild(doc.createTextNode(this.features.get(name).toString()));
-                featureElement.appendChild(valueElement);
-
                 rootElement.appendChild(featureElement);
+
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            FeatJarLogger.logError("Exception occured please check log file");
         }
+    }
+    
+    /**
+     * Gets the name of this XML format configuration.
+     *
+     * @return The name of the XML format configuration.
+     */
+    @Override
+    public String getName() {
+        return "ConfigurationXMLFormat";
     }
 
     /**
-     * Parses an XML file into a Document object.
+     * Retrieves the input header pattern used for this XML format configuration.
      *
-     * @param file The XML file to parse.
-     * @return A Document object representing the parsed XML file.
-     * @throws Exception if an error occurs while parsing the XML file.
+     * @return The input header pattern, or null if not applicable.
      */
-    /*protected Document parseDocument(File file) throws Exception {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        return dBuilder.parse(file);
-    }*/
 
-    /**
-     * Creates a new Document object.
-     *
-     * @return A new Document object.
-     * @throws Exception if an error occurs while creating the Document object.
-     */
-    /*protected Document createDocument() throws Exception {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        return dBuilder.newDocument();
-    }*/
-
-  
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Pattern getInputHeaderPattern() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+    @Override
+    protected Pattern getInputHeaderPattern() {
+        return null;
+    }
 }
