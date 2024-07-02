@@ -61,9 +61,9 @@ class FeatureConfigurationTest {
 
 	@Test
 	void testSetManualSelection() {
-	    featureConfiguration.setManual(featureName1, SelectionType.SELECTED);
+	    featureConfiguration.setManual(featureName1, Selection.SELECTED);
 	    assertTrue(featureConfiguration.isManualSelected(featureName1));
-	    featureConfiguration.setManual(featureName1, SelectionType.UNSELECTED);
+	    featureConfiguration.setManual(featureName1, Selection.UNSELECTED);
 	    assertFalse(featureConfiguration.isManualSelected(featureName1));
 	    featureConfiguration.resetManual(featureName1);
 	    assertFalse(featureConfiguration.isManualSelected(featureName1));
@@ -71,9 +71,9 @@ class FeatureConfigurationTest {
 
 	@Test
 	void testSetAutomaticSelection() {
-	    featureConfiguration.setAutomatic(featureName2, SelectionType.SELECTED);
+	    featureConfiguration.setAutomatic(featureName2, Selection.SELECTED);
 	    assertTrue(featureConfiguration.isAutomaticSelected(featureName2));
-	    featureConfiguration.setAutomatic(featureName2, SelectionType.UNSELECTED);
+	    featureConfiguration.setAutomatic(featureName2, Selection.UNSELECTED);
 	    assertFalse(featureConfiguration.isAutomaticSelected(featureName2));
 	    featureConfiguration.resetAutomatic(featureName2);
 	    assertFalse(featureConfiguration.isAutomaticSelected(featureName2));

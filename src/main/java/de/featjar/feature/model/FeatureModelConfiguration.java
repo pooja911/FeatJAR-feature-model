@@ -2,14 +2,11 @@ package de.featjar.feature.model;
 
 import java.util.*;
 
-import de.featjar.base.data.identifier.IIdentifiable;
-import de.featjar.base.data.identifier.IIdentifier;
-
 /**
  * FeatureModelConfiguration manages the selection state of features within a feature model.
  * It supports adding and removing features, manually or automatically setting their selection state,
  * and resetting their selection state. It also allows retrieving sets of features based on their selection state.
- * 
+ *
  * Example usage:
  *     FeatureModel featureModel = new FeatureModel();
  *     FeatureModelConfiguration config = new FeatureModelConfiguration(featureModel);
@@ -18,17 +15,16 @@ import de.featjar.base.data.identifier.IIdentifier;
  *     Set<IIdentifier> selectedFeatures = config.getSelectedFeatures();
  *
  * Note: Throws FeatureNotFoundException if a feature is not found during selection state changes.
- * 
+ *
  * @see IFeature
  * @see SelectableFeature
- * @see SelectionType
+ * @see Selection
  * @see FeatureNotFoundException
- * 
- * Author: Pooja Garg
  *
+ * Author: Pooja Garg
  */
 public class FeatureModelConfiguration {
-    private final FeatureModel featureModel; // The feature model instance
+    private final FeatureModel featureModel;
     private final Map<String, SelectableFeature> featureStates = new HashMap<>();
 
     public FeatureModelConfiguration(FeatureModel featureModel) {
@@ -42,8 +38,8 @@ public class FeatureModelConfiguration {
 
     /**
      * Adds a feature to the configuration if it exists in the feature model.
-     * 
-     * @param featureId the identifier of the feature to add
+     *
+     * @param featureName the identifier of the feature to add
      * @throws FeatureNotFoundException if the feature is not found in the feature model
      */
     public void addFeature(String featureName) {
@@ -55,7 +51,7 @@ public class FeatureModelConfiguration {
 
     /**
      * Removes a feature from the configuration.
-     * 
+     *
      * @param featureId the identifier of the feature to remove
      */
     public void removeFeature(String featureId) {
@@ -64,53 +60,53 @@ public class FeatureModelConfiguration {
 
     /**
      * Sets the manual selection state of a feature.
-     * 
+     *
      * @param featureId the identifier of the feature to update
      * @param selection the new selection state
      * @throws FeatureNotFoundException if the feature is not found in the configuration
      */
-    public void setManual(String featureId, SelectionType selection) {
+    public void setManual(String featureId, Selection selection) {
         SelectableFeature selectableFeature = getFeatureState(featureId);
         selectableFeature.setManual(selection);
     }
 
     /**
      * Sets the automatic selection state of a feature.
-     * 
+     *
      * @param featureId the identifier of the feature to update
      * @param selection the new selection state
      * @throws FeatureNotFoundException if the feature is not found in the configuration
      */
-    public void setAutomatic(String featureId, SelectionType selection) {
+    public void setAutomatic(String featureId, Selection selection) {
         SelectableFeature selectableFeature = getFeatureState(featureId);
         selectableFeature.setAutomatic(selection);
     }
-    
+
     /**
      * Resets the manual selection state of a feature.
-     * 
+     *
      * @param featureId the identifier of the feature to reset
      */
     public void resetManual(String featureId) {
-        setManual(featureId, SelectionType.UNDEFINED);
+        setManual(featureId, Selection.UNDEFINED);
     }
 
     /**
      * Resets the automatic selection state of a feature.
-     * 
+     *
      * @param featureId the identifier of the feature to reset
      */
     public void resetAutomatic(String featureId) {
-        setAutomatic(featureId, SelectionType.UNDEFINED);
+        setAutomatic(featureId, Selection.UNDEFINED);
     }
 
     /**
      * Returns a set of feature identifiers with the specified selection state.
-     * 
+     *
      * @param selection the selection state to filter by
      * @return a set of feature identifiers with the specified selection state
      */
-    public Set<String> getFeaturesBySelection(SelectionType selection) {
+    public Set<String> getFeaturesBySelection(Selection selection) {
         Set<String> result = new HashSet<>();
         for (SelectableFeature selectableFeature : featureStates.values()) {
             if (selectableFeature.getSelection() == selection) {
@@ -121,15 +117,15 @@ public class FeatureModelConfiguration {
     }
 
     public Set<String> getSelectedFeatures() {
-        return getFeaturesBySelection(SelectionType.SELECTED);
+        return getFeaturesBySelection(Selection.SELECTED);
     }
 
     public Set<String> getUnselectedFeatures() {
-        return getFeaturesBySelection(SelectionType.UNSELECTED);
+        return getFeaturesBySelection(Selection.UNSELECTED);
     }
 
     public Set<String> getUndefinedFeatures() {
-        return getFeaturesBySelection(SelectionType.UNDEFINED);
+        return getFeaturesBySelection(Selection.UNDEFINED);
     }
 
     /**
@@ -146,22 +142,20 @@ public class FeatureModelConfiguration {
         }
         return selectableFeature;
     }
-    
+
     public boolean isManualSelected(String featureName) {
-    	return getFeatureState(featureName).getManual() == SelectionType.SELECTED;
-	}
-    
-    public boolean isAutomaticSelected(String featureName)
-    {
-    	return getFeatureState(featureName).getAutomatic() == SelectionType.SELECTED;
+        return getFeatureState(featureName).getManual() == Selection.SELECTED;
     }
-    
-    public Set<String> getAllFeatures()
-    {
-    	Set<String> features = new HashSet<>();
-    	features.addAll(getSelectedFeatures());
-    	features.addAll(getUnselectedFeatures());
-    	features.addAll(getUndefinedFeatures());
-    	return features;
+
+    public boolean isAutomaticSelected(String featureName) {
+        return getFeatureState(featureName).getAutomatic() == Selection.SELECTED;
+    }
+
+    public Set<String> getAllFeatures() {
+        Set<String> features = new HashSet<>();
+        features.addAll(getSelectedFeatures());
+        features.addAll(getUnselectedFeatures());
+        features.addAll(getUndefinedFeatures());
+        return features;
     }
 }
