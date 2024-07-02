@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-public class ConfigurationXMLFormatTest {
+public class ConfigFormatTest {
 
     private ConfigurationXMLFormat configFormat;
     private FeatureModel featureModel;
